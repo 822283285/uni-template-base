@@ -3,12 +3,18 @@
         "dcloudio",
         "easycom",
         "elips",
+        "haround",
         "hbetween",
         "hcenter",
+        "hevenly",
         "hflex",
         "hvcenter",
         "norepeat",
         "uniapp",
-        "vflex"
+        "vbaseline",
+        "vbottom",
+        "vflex",
+        "vstretch",
+        "vtop"
     ]
 }
