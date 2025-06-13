@@ -10,7 +10,7 @@
 <template>
   <view :style="$c(`vflex bg-base h-${screenHeight}`)">
     <!-- 顶部导航栏 -->
-    <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-120 px-30 bg-card border-b`)">
+    <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-120 px-30 bg-card`)">
       <view :style="$c(`w-120 h-80`)">
         <!-- 返回按钮位置 -->
       </view>
@@ -32,7 +32,7 @@
     <!-- 滚动内容区域 -->
     <scroll-view 
       scroll-y 
-      :style="$c(`flex-1 px-30 h-${screenHeight-80} scrollbar-hidden`)"
+      :style="$c(`flex-1 px-30 h-${screenHeight-80} scrollbar-hidden py-20`)"
     >
       <!-- 主题色彩展示 -->
       <view :style="$c(`mb-40`)">

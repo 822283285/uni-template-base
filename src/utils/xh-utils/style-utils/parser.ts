@@ -74,7 +74,7 @@ const themeRegistry: ThemeRegistry = {
         if (!themeConfig || typeof themeConfig !== 'object') {
             throw new Error('主题配置必须是有效的对象');
         }
-        allTheme[name] = mergeTheme(themeConfig);
+        allTheme[name] = mergeTheme(deepMerge(this.getCurrentThemeObj(), themeConfig));
         console.log(`主题 "${name}" 注册成功`);
     },
 
@@ -154,12 +154,12 @@ const themeRegistry: ThemeRegistry = {
 const parser = (...args: string[]): string => {
     // 生成完整参数的缓存键
     const fullCacheKey = `${theme.value}:${args.join('|')}`;
-    
+
     // 检查整体CSS解析缓存
     if (cacheSystem.fullParseCache.has(fullCacheKey)) {
         return cacheSystem.fullParseCache.get(fullCacheKey)!;
     }
-    
+
     const currentTheme: themeObj = allTheme[theme.value] || allTheme['light'];
 
     // 处理直接CSS样式
@@ -174,26 +174,26 @@ const parser = (...args: string[]): string => {
     const handleThemeStyle = (style: string): string => {
         const trimmedStyle = style.trim();
         if (!trimmedStyle) return '';
-        
+
         // 生成单个类的缓存键
         const singleClassCacheKey = `${theme.value}:${trimmedStyle}`;
-        
+
         // 检查单个类处理缓存
         if (cacheSystem.singleClassCache.has(singleClassCacheKey)) {
             return cacheSystem.singleClassCache.get(singleClassCacheKey)!;
         }
-        
+
         let result = '';
-        
+
         // 获取样式前缀
         const getStylePrefix = (style: string): string => {
             return style.split('-').slice(0, -1).join('-') + '-';
         };
-        
+
         // 特殊处理背景和文字颜色
         const handleColorStyle = (style: string, prefix: string, property: string): string => {
             const colorName = style.replace(prefix, '');
-            if(currentTheme[style]){
+            if (currentTheme[style]) {
                 return `${property}: ${currentTheme[style]};`;
             }
             if (currentTheme[colorName] && typeof currentTheme[colorName] === 'string') {
@@ -205,7 +205,7 @@ const parser = (...args: string[]): string => {
             }
             return '';
         };
-        
+
         // 处理背景颜色
         if (trimmedStyle.startsWith('bg-') && !trimmedStyle.includes('filter') && !trimmedStyle.includes('repeat') && !trimmedStyle.includes('size') && !trimmedStyle.includes('position')) {
             result = handleColorStyle(trimmedStyle, 'bg-', 'background');
@@ -230,11 +230,11 @@ const parser = (...args: string[]): string => {
                 result = currentTheme[prefix](trimmedStyle);
             }
         }
-        
+
         if (!result) {
             console.warn(`样式 "${trimmedStyle}" 无法解析`);
         }
-        
+
         // 缓存单个类处理结果
         cacheSystem.singleClassCache.set(singleClassCacheKey, result);
         return result;
@@ -245,26 +245,26 @@ const parser = (...args: string[]): string => {
         if (input.includes(':')) {
             return handleDirectCSS(input);
         }
-        
+
         // 生成类CSS字符串的缓存键
         const classStringCacheKey = `${theme.value}:${input}`;
-        
+
         // 检查类CSS处理缓存
         if (cacheSystem.classStringCache.has(classStringCacheKey)) {
             return cacheSystem.classStringCache.get(classStringCacheKey)!;
         }
-        
+
         // 处理类CSS字符串
         const classResult = input.split(' ').map(style => handleThemeStyle(style)).filter(Boolean).join('');
-        
+
         // 缓存类CSS处理结果
         cacheSystem.classStringCache.set(classStringCacheKey, classResult);
         return classResult;
     }).join('');
-    
+
     // 缓存整体CSS解析结果
     cacheSystem.fullParseCache.set(fullCacheKey, finalResult);
-    
+
     return finalResult;
 };
 
