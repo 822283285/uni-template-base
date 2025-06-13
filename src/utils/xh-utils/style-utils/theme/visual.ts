@@ -75,6 +75,10 @@ const visual: visual = {
             }
         }
     },
+    "shadow-":(value:string)=>{
+        
+        return `box-shadow: ${value.replace("shadow-", "")};`
+    },
     // 背景相关属性
     ...backgroundPositions,
     ...backgroundRepeats,

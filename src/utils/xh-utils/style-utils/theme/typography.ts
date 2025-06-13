@@ -38,11 +38,24 @@ const typography: typography = {
     "text-": createPropertyHandler("font-size", "text"),
     // 字体粗细
     "font-": createSimpleHandler("font-weight", "font"),
+    "font-bold": "font-weight: bold;",
+    "font-normal": "font-weight: normal;",
+    "font-light": "font-weight: 300;",
+    "font-medium": "font-weight: 500;",
+    "font-semibold": "font-weight: 600;",
     /** 文本相关 */
     // 对齐方式
     "text-align-": createSimpleHandler("text-align", "text-align"),
+    "text-left": "text-align: left;",
+    "text-center": "text-align: center;",
+    "text-right": "text-align: right;",
     // 文字修饰
     "text-decoration-": createSimpleHandler("text-decoration", "text-decoration"),
+    // 显示方式
+    "block": "display: block;",
+    "inline": "display: inline;",
+    "inline-block": "display: inline-block;",
+    "none": "display: none;",
     // 超出省略
     "w-elips": "overflow: hidden; text-overflow: ellipsis; white-space: nowrap;",
     "w-elips-": createComplexHandler(

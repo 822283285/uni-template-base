@@ -10,14 +10,24 @@
       }
     },
     {
-      "path": "pages/index/test",
+      "path": "pages/index/theme-example",
       "type": "page",
       "name": "test",
       "style": {
         "navigationStyle": "custom",
-        "navigationBarTitleText": "测试"
+        "navigationBarTitleText": "主题示例页面"
       }
     }
   ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "@uni-helper"
+  },
+  "easycom": {
+    "custom": {
+      "^xh-(.*)": "@/components/xh-$1/xh-$1.vue"
+    }
+  },
+  "__esModule": true,
   "subPackages": []
 }

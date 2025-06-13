@@ -138,14 +138,42 @@ const parser = (...args: string[]): string => {
 
     // 处理主题样式
     const handleThemeStyle = (style: string): string => {
+        
         const trimmedStyle = style.trim();
         if (!trimmedStyle) return '';
-
+        
         // 获取样式前缀
         const getStylePrefix = (style: string): string => {
             return style.split('-').slice(0, -1).join('-') + '-';
         };
-
+        
+        // 特殊处理背景和文字颜色
+        const handleColorStyle = (style: string, prefix: string, property: string): string => {
+            const colorName = style.replace(prefix, '');
+            if(currentTheme[style]){
+                return `${property}: ${currentTheme[style]};`;
+            }
+            if (currentTheme[colorName] && typeof currentTheme[colorName] === 'string') {
+                return `${property}: ${currentTheme[colorName]};`;
+            }
+            // 如果不是主题颜色，使用原始处理函数
+            if (typeof currentTheme[prefix] === 'function') {
+                return currentTheme[prefix](style);
+            }
+            return '';
+        };
+        
+        // 处理背景颜色
+        if (trimmedStyle.startsWith('bg-') && !trimmedStyle.includes('filter') && !trimmedStyle.includes('repeat') && !trimmedStyle.includes('size') && !trimmedStyle.includes('position')) {
+            
+            return handleColorStyle(trimmedStyle, 'bg-', 'background');
+        }
+        
+        // 处理文字颜色
+        if (trimmedStyle.startsWith('text-') && !trimmedStyle.includes('align') && !trimmedStyle.includes('decoration') && !['text-xs', 'text-sm', 'text-md', 'text-lg', 'text-xl', 'text-xxl', 'text-2xl'].includes(trimmedStyle)) {
+            return handleColorStyle(trimmedStyle, 'text-', 'color');
+        }
+        
         // 如果是主题中定义的直接样式
         if (currentTheme[trimmedStyle] && typeof currentTheme[trimmedStyle] === 'string') {
             if (currentTheme[trimmedStyle].includes(';')) {

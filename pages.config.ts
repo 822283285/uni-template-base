@@ -6,4 +6,9 @@ export default defineUniPages({
         navigationBarTextStyle: 'white',
         navigationBarTitleText: '@uni-helper',
     },
+    easycom:{
+        custom: {
+            '^xh-(.*)': '@/components/xh-$1/xh-$1.vue',
+        },
+    }
 })

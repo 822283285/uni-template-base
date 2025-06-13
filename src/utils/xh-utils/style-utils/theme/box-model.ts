@@ -100,6 +100,20 @@ const boxModel: boxModel = {
     "rounded-tr-": createPropertyHandler("border-top-right-radius", "rounded-tr"),
     "rounded-bl-": createPropertyHandler("border-bottom-left-radius", "rounded-bl"),
     "rounded-br-": createPropertyHandler("border-bottom-right-radius", "rounded-br"),
+    /** 常用尺寸 */
+    // 全屏高度
+    "min-h-100vh": "min-height: 100vh;",
+    "h-100vh": "height: 100vh;",
+    "max-h-100vh": "max-height: 100vh;",
+    // 全屏宽度
+    "w-100vw": "width: 100vw;",
+    "min-w-100vw": "min-width: 100vw;",
+    "max-w-100vw": "max-width: 100vw;",
+    // 百分比尺寸
+    "w-full": "width: 100%;",
+    "h-full": "height: 100%;",
+    "w-screen": "width: 100vw;",
+    "h-screen": "height: 100vh;"
 }
 export default boxModel;
 export type {
