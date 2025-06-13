@@ -27,6 +27,30 @@ interface ThemeRegistry {
 
 const theme: Ref<ThemeType> = ref((store.get(constant.NOW_THEME) as ThemeType) || 'light');
 
+// 缓存系统
+interface CacheSystem {
+    // 整体CSS解析缓存 - key: 完整参数字符串, value: 解析结果
+    fullParseCache: Map<string, string>;
+    // 类CSS处理缓存 - key: 类CSS字符串, value: 解析结果
+    classStringCache: Map<string, string>;
+    // 单个类处理缓存 - key: 单个类名, value: 解析结果
+    singleClassCache: Map<string, string>;
+    // 清空所有缓存
+    clearAll(): void;
+}
+
+const cacheSystem: CacheSystem = {
+    fullParseCache: new Map<string, string>(),
+    classStringCache: new Map<string, string>(),
+    singleClassCache: new Map<string, string>(),
+    clearAll() {
+        this.fullParseCache.clear();
+        this.classStringCache.clear();
+        this.singleClassCache.clear();
+        console.log('样式缓存已清空');
+    }
+};
+
 // 初始化主题映射，包含内置主题
 const allTheme: ThemeMap = {
     light: mergeTheme(lightTheme),
@@ -101,6 +125,8 @@ const themeRegistry: ThemeRegistry = {
         }
         theme.value = name;
         store.set(constant.NOW_THEME, name);
+        // 切换主题时清空缓存
+        cacheSystem.clearAll();
         console.log(`当前主题已切换为: ${name}`);
     },
 
@@ -126,6 +152,14 @@ const themeRegistry: ThemeRegistry = {
  * @param args 样式参数
  */
 const parser = (...args: string[]): string => {
+    // 生成完整参数的缓存键
+    const fullCacheKey = `${theme.value}:${args.join('|')}`;
+    
+    // 检查整体CSS解析缓存
+    if (cacheSystem.fullParseCache.has(fullCacheKey)) {
+        return cacheSystem.fullParseCache.get(fullCacheKey)!;
+    }
+    
     const currentTheme: themeObj = allTheme[theme.value] || allTheme['light'];
 
     // 处理直接CSS样式
@@ -136,11 +170,20 @@ const parser = (...args: string[]): string => {
         }).join('');
     };
 
-    // 处理主题样式
+    // 处理主题样式（带单个类缓存）
     const handleThemeStyle = (style: string): string => {
-        
         const trimmedStyle = style.trim();
         if (!trimmedStyle) return '';
+        
+        // 生成单个类的缓存键
+        const singleClassCacheKey = `${theme.value}:${trimmedStyle}`;
+        
+        // 检查单个类处理缓存
+        if (cacheSystem.singleClassCache.has(singleClassCacheKey)) {
+            return cacheSystem.singleClassCache.get(singleClassCacheKey)!;
+        }
+        
+        let result = '';
         
         // 获取样式前缀
         const getStylePrefix = (style: string): string => {
@@ -165,50 +208,72 @@ const parser = (...args: string[]): string => {
         
         // 处理背景颜色
         if (trimmedStyle.startsWith('bg-') && !trimmedStyle.includes('filter') && !trimmedStyle.includes('repeat') && !trimmedStyle.includes('size') && !trimmedStyle.includes('position')) {
-            
-            return handleColorStyle(trimmedStyle, 'bg-', 'background');
+            result = handleColorStyle(trimmedStyle, 'bg-', 'background');
         }
-        
         // 处理文字颜色
-        if (trimmedStyle.startsWith('text-') && !trimmedStyle.includes('align') && !trimmedStyle.includes('decoration') && !['text-xs', 'text-sm', 'text-md', 'text-lg', 'text-xl', 'text-xxl', 'text-2xl'].includes(trimmedStyle)) {
-            return handleColorStyle(trimmedStyle, 'text-', 'color');
+        else if (trimmedStyle.startsWith('text-') && !trimmedStyle.includes('align') && !trimmedStyle.includes('decoration') && !['text-xs', 'text-sm', 'text-md', 'text-lg', 'text-xl', 'text-xxl', 'text-2xl'].includes(trimmedStyle)) {
+            result = handleColorStyle(trimmedStyle, 'text-', 'color');
         }
-        
         // 如果是主题中定义的直接样式
-        if (currentTheme[trimmedStyle] && typeof currentTheme[trimmedStyle] === 'string') {
+        else if (currentTheme[trimmedStyle] && typeof currentTheme[trimmedStyle] === 'string') {
             if (currentTheme[trimmedStyle].includes(';')) {
-                return currentTheme[trimmedStyle];
-            }
-
-            const prefix = getStylePrefix(trimmedStyle);
-            if (typeof currentTheme[prefix] === 'function') {
-                return currentTheme[prefix](`${prefix}${currentTheme[trimmedStyle]}`);
+                result = currentTheme[trimmedStyle];
+            } else {
+                const prefix = getStylePrefix(trimmedStyle);
+                if (typeof currentTheme[prefix] === 'function') {
+                    result = currentTheme[prefix](`${prefix}${currentTheme[trimmedStyle]}`);
+                }
             }
         } else { // 如果是需要通过函数处理的样式
             const prefix = getStylePrefix(trimmedStyle);
             if (typeof currentTheme[prefix] === 'function') {
-                return currentTheme[prefix](trimmedStyle);
+                result = currentTheme[prefix](trimmedStyle);
             }
         }
-
-        console.warn(`样式 "${trimmedStyle}" 无法解析`);
-        return '';
+        
+        if (!result) {
+            console.warn(`样式 "${trimmedStyle}" 无法解析`);
+        }
+        
+        // 缓存单个类处理结果
+        cacheSystem.singleClassCache.set(singleClassCacheKey, result);
+        return result;
     };
 
     // 处理所有输入样式
-    return args.map(input => {
+    const finalResult = args.map(input => {
         if (input.includes(':')) {
             return handleDirectCSS(input);
         }
-        return input.split(' ').map(style => handleThemeStyle(style)).filter(Boolean).join('');
+        
+        // 生成类CSS字符串的缓存键
+        const classStringCacheKey = `${theme.value}:${input}`;
+        
+        // 检查类CSS处理缓存
+        if (cacheSystem.classStringCache.has(classStringCacheKey)) {
+            return cacheSystem.classStringCache.get(classStringCacheKey)!;
+        }
+        
+        // 处理类CSS字符串
+        const classResult = input.split(' ').map(style => handleThemeStyle(style)).filter(Boolean).join('');
+        
+        // 缓存类CSS处理结果
+        cacheSystem.classStringCache.set(classStringCacheKey, classResult);
+        return classResult;
     }).join('');
+    
+    // 缓存整体CSS解析结果
+    cacheSystem.fullParseCache.set(fullCacheKey, finalResult);
+    
+    return finalResult;
 };
 
-// 导出主题注册器和解析器
+// 导出主题注册器、解析器和缓存系统
 export {
     themeRegistry,
     parser,
     theme,
+    cacheSystem,
 };
 
 export type {
