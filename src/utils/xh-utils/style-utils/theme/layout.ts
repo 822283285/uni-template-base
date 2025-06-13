@@ -82,7 +82,7 @@ const layout: layout = {
     "scrollbar-thin": "scrollbar-width: thin;",
     "scrollbar-thick": "scrollbar-width: thick;",
     "scrollbar-auto": "scrollbar-width: auto;",
-    "scrollbar-hidden": "scrollbar-width: none;",
+    "scrollbar-hidden": "scrollbar-width: none; -ms-overflow-style: none;",
 }
 
 export default layout;

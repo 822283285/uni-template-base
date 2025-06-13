@@ -8,7 +8,7 @@
 }
 </route>
 <template>
-  <view :style="$c(`vflex bg-base min-h-100vh`)">
+  <view :style="$c(`vflex bg-base h-${screenHeight}`)">
     <!-- 顶部导航栏 -->
     <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-120 px-30 bg-card border-b`)">
       <view :style="$c(`w-120 h-80`)">
@@ -32,7 +32,7 @@
     <!-- 滚动内容区域 -->
     <scroll-view 
       scroll-y 
-      :style="$c(`flex-1 px-30 py-20`)"
+      :style="$c(`flex-1 px-30 h-${screenHeight-80} scrollbar-hidden`)"
     >
       <!-- 主题色彩展示 -->
       <view :style="$c(`mb-40`)">
@@ -160,7 +160,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { $c, themeRegistry } from '@utils/xh-utils'
-
+let {screenHeight,screenWidth} = uni.getWindowInfo()
+screenHeight = (screenHeight/screenWidth)*750
 const title = ref('主题示例页面')
 const subTitle = ref('欢迎使用主题工具')
 
