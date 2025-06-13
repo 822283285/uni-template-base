@@ -1,0 +1,23 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "type": "home",
+      "name": "home",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/index/test",
+      "type": "page",
+      "name": "test",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "测试"
+      }
+    }
+  ],
+  "subPackages": []
+}
