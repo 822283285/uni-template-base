@@ -60,6 +60,14 @@ const allTheme: ThemeMap = {
 function mergeTheme(sourceTheme: themeObj) {
     return deepMerge<object>(layout, boxModel, typography, visual, sourceTheme) as themeObj;
 }
+function simpleHash(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0; // 转换为32位整数
+    }
+    return hash.toString();
+}
 // 主题注册器实现
 const themeRegistry: ThemeRegistry = {
     /**
@@ -153,7 +161,7 @@ const themeRegistry: ThemeRegistry = {
  */
 const parser = (...args: string[]): string => {
     // 生成完整参数的缓存键
-    const fullCacheKey = `${theme.value}:${args.join('|')}`;
+    const fullCacheKey = simpleHash(`${theme.value}:${args.join('|')}`);
 
     // 检查整体CSS解析缓存
     if (cacheSystem.fullParseCache.has(fullCacheKey)) {
@@ -176,7 +184,7 @@ const parser = (...args: string[]): string => {
         if (!trimmedStyle) return '';
 
         // 生成单个类的缓存键
-        const singleClassCacheKey = `${theme.value}:${trimmedStyle}`;
+        const singleClassCacheKey = simpleHash(`${theme.value}:${trimmedStyle}`);
 
         // 检查单个类处理缓存
         if (cacheSystem.singleClassCache.has(singleClassCacheKey)) {
@@ -247,7 +255,7 @@ const parser = (...args: string[]): string => {
         }
 
         // 生成类CSS字符串的缓存键
-        const classStringCacheKey = `${theme.value}:${input}`;
+        const classStringCacheKey = simpleHash(`${theme.value}:${input}`);
 
         // 检查类CSS处理缓存
         if (cacheSystem.classStringCache.has(classStringCacheKey)) {
