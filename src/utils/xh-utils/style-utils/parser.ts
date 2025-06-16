@@ -20,6 +20,7 @@ interface ThemeRegistry {
     unregisterTheme(name: string): void;
     getTheme(name: string): themeObj | undefined;
     getAllThemes(): string[];
+    getAllThemesObj(): ThemeMap;
     setCurrentTheme(name: string): void;
     getCurrentTheme(): string;
     getCurrentThemeObj(): themeObj;
@@ -125,6 +126,10 @@ const themeRegistry: ThemeRegistry = {
         return Object.keys(allTheme);
     },
 
+    getAllThemesObj(): ThemeMap {
+        return allTheme;
+    },
+
     /**
      * 设置当前主题
      * @param name 主题名称
@@ -157,126 +162,307 @@ const themeRegistry: ThemeRegistry = {
     }
 };
 
+// ==================== 缓存装饰器 ====================
+/**
+ * 缓存装饰器函数
+ * @param fn 需要缓存的函数
+ * @param cacheMap 缓存映射
+ * @returns 带缓存的函数
+ */
+function withCache<T extends (...args: any[]) => string>(fn: T, cacheMap: Map<string, string>): (cacheKey: string, ...args: Parameters<T>) => string {
+    return (cacheKey: string, ...args: Parameters<T>): string => {
+        if (cacheMap.has(cacheKey)) {
+            return cacheMap.get(cacheKey)!;
+        }
+        const result = fn(...args);
+        cacheMap.set(cacheKey, result);
+        return result;
+    };
+}
+
+// ==================== 样式处理器 ====================
+/**
+ * 获取样式前缀
+ * @param style 样式字符串
+ * @returns 样式前缀
+ */
+function getStylePrefix(style: string): string {
+    return style.split('-').slice(0, -1).join('-') + '-';
+}
+
+/**
+ * 处理直接CSS样式
+ * @param style CSS样式字符串
+ * @returns 格式化的CSS字符串
+ */
+function parseDirectCSS(style: string): string {
+    return style.split(';').filter(prop => prop.trim()).map(prop => {
+        const [key, value] = prop.split(':').map(part => part.trim());
+        return `${key}: ${value};`;
+    }).join('');
+}
+
+/**
+ * 处理颜色样式（背景色、文字色）
+ * @param style 样式字符串
+ * @param prefix 样式前缀
+ * @param property CSS属性名
+ * @param currentTheme 当前主题对象
+ * @returns CSS字符串
+ */
+function parseColorStyle(style: string, prefix: string, property: string, currentTheme: themeObj): string {
+    const colorName = style.replace(prefix, '');
+
+    if (currentTheme[style]) {
+        return `${property}: ${currentTheme[style]};`;
+    }
+
+    if (currentTheme[colorName] && typeof currentTheme[colorName] === 'string') {
+        return `${property}: ${currentTheme[colorName]};`;
+    }
+
+    // 如果不是主题颜色，使用原始处理函数
+    if (typeof currentTheme[prefix] === 'function') {
+        return currentTheme[prefix](style);
+    }
+
+    return '';
+}
+
+/**
+ * 处理边框样式
+ * @param style 样式字符串
+ * @param currentTheme 当前主题对象
+ * @returns CSS字符串
+ */
+function parseBorderStyle(style: string, currentTheme: themeObj): string {
+    if (!style.startsWith('border-')) return '';
+
+    const prefix = getStylePrefix(style);
+
+    // 处理完整边框样式
+    if (currentTheme[style]) {
+        return `border: ${currentTheme[style]};`;
+    }
+
+    // 处理单侧边框样式
+    const sideMap = { t: 'top', r: 'right', b: 'bottom', l: 'left' };
+    for (const [shortSide, fullSide] of Object.entries(sideMap)) {
+        if (prefix === `border-${shortSide}-`) {
+            const themeValue = currentTheme[style.replace(`-${shortSide}`, '')];
+            if (themeValue) {
+                return `border-${fullSide}: ${themeValue};`;
+            }
+        }
+    }
+
+    // 处理x/y轴边框样式
+    const axisMap = {
+        x: ['left', 'right'],
+        y: ['top', 'bottom']
+    };
+
+    for (const [axis, sides] of Object.entries(axisMap)) {
+        if (prefix === `border-${axis}-`) {
+            const themeValue = currentTheme[style.replace(`-${axis}`, '')];
+            if (themeValue) {
+                return sides.map(side => `border-${side}: ${themeValue};`).join('');
+            }
+        }
+    }
+
+    return '';
+}
+
+/**
+ * 处理圆角样式
+ * @param style 样式字符串
+ * @param currentTheme 当前主题对象
+ * @returns CSS字符串
+ */
+function parseRoundedStyle(style: string, currentTheme: themeObj): string {
+    const prefix = getStylePrefix(style);
+
+    // 处理完整圆角样式
+    if (currentTheme[style]) {
+        return `border-radius: ${currentTheme[style]};`;
+    }
+
+    // 处理单侧圆角样式
+    const sideMap = {
+        t: ['top-left', 'top-right'],
+        r: ['top-right', 'bottom-right'],
+        b: ['bottom-left', 'bottom-right'],
+        l: ['top-left', 'bottom-left']
+    };
+
+    for (const [shortSide, corners] of Object.entries(sideMap)) {
+        if (prefix === `rounded-${shortSide}-`) {
+            const themeValue = currentTheme[style.replace(`-${shortSide}`, '')];
+            if (themeValue) {
+                return corners.map(corner => `border-${corner}-radius: ${themeValue};`).join('');
+            }
+        }
+    }
+
+    // 处理角落圆角样式
+    const cornerMap = {
+        tr: 'top-right',
+        tl: 'top-left',
+        br: 'bottom-right',
+        bl: 'bottom-left'
+    };
+
+    for (const [shortCorner, fullCorner] of Object.entries(cornerMap)) {
+        if (prefix === `rounded-${shortCorner}-`) {
+            const themeValue = currentTheme[style.replace(`-${shortCorner}`, '')];
+            if (themeValue) {
+                return `border-${fullCorner}-radius: ${themeValue};`;
+            }
+        }
+    }
+
+    return '';
+}
+
+/**
+ * 处理主题样式
+ * @param style 样式字符串
+ * @param currentTheme 当前主题对象
+ * @returns CSS字符串
+ */
+function parseThemeStyle(style: string, currentTheme: themeObj): string {
+    const trimmedStyle = style.trim();
+    if (!trimmedStyle) return '';
+
+    // 如果是主题中定义的直接样式
+    if (currentTheme[trimmedStyle] && typeof currentTheme[trimmedStyle] === 'string') {
+        if (currentTheme[trimmedStyle].includes(';')) {
+            return currentTheme[trimmedStyle];
+        }
+
+        const prefix = getStylePrefix(trimmedStyle);
+        if (typeof currentTheme[prefix] === 'function') {
+            return currentTheme[prefix](`${prefix}${currentTheme[trimmedStyle]}`);
+        }
+    }
+
+    // 如果是需要通过函数处理的样式
+    const prefix = getStylePrefix(trimmedStyle);
+    if (typeof currentTheme[prefix] === 'function') {
+        return currentTheme[prefix](trimmedStyle);
+    }
+
+    return '';
+}
+
+// ==================== 样式处理策略映射 ====================
+type StyleHandler = (style: string, currentTheme: themeObj) => string;
+
+interface StyleRule {
+    test: (style: string) => boolean;
+    handler: StyleHandler;
+}
+
+/**
+ * 样式处理规则数组
+ */
+const styleRules: StyleRule[] = [
+    {
+        test: (style) => style.startsWith('rounded-') && ['xs', 'sm', 'md', 'lg', 'circle'].some(size => style.includes(size)),
+        handler: parseRoundedStyle
+    },
+    {
+        test: (style) => style.startsWith('border-') && ['light', 'dark'].some(theme => style.includes(theme)),
+        handler: parseBorderStyle
+    },
+    {
+        test: (style) => style.startsWith('bg-') && !['filter', 'repeat', 'size', 'position'].some(prop => style.includes(prop)),
+        handler: (style, theme) => parseColorStyle(style, 'bg-', 'background', theme)
+    },
+    {
+        test: (style) => style.startsWith('text-') && !['align', 'decoration'].some(prop => style.includes(prop)) && !['text-xs', 'text-sm', 'text-md', 'text-lg', 'text-xl', 'text-xxl', 'text-2xl'].includes(style),
+        handler: (style, theme) => parseColorStyle(style, 'text-', 'color', theme)
+    },
+    {
+        test: () => true, // 默认处理器
+        handler: parseThemeStyle
+    }
+];
+
+/**
+ * 处理单个样式类
+ * @param style 样式字符串
+ * @param currentTheme 当前主题对象
+ * @returns CSS字符串
+ */
+function processSingleStyle(style: string, currentTheme: themeObj): string {
+    const trimmedStyle = style.trim();
+    if (!trimmedStyle) return '';
+
+    // 查找匹配的处理规则
+    const rule = styleRules.find(rule => rule.test(trimmedStyle));
+    const result = rule ? rule.handler(trimmedStyle, currentTheme) : '';
+
+    if (!result) {
+        console.warn(`样式 "${trimmedStyle}" 无法解析`);
+    }
+
+    return result;
+}
+
+// ==================== 主解析器 ====================
 /**
  * 样式解析器
  * @param args 样式参数
+ * @returns 解析后的CSS字符串
  */
 const parser = (...args: string[]): string => {
-    // 生成完整参数的缓存键
-    const fullCacheKey = simpleHash(`${theme.value}:${args.join('|')}`);
-
-    // 检查整体CSS解析缓存
-    if (cacheSystem.fullParseCache.has(fullCacheKey)) {
-        return cacheSystem.fullParseCache.get(fullCacheKey)!;
-    }
-
     const currentTheme: themeObj = allTheme[theme.value] || allTheme['light'];
 
-    // 处理直接CSS样式
-    const handleDirectCSS = (style: string): string => {
-        return style.split(';').filter(prop => prop.trim()).map(prop => {
-            const [key, value] = prop.split(':').map(part => part.trim());
-            return `${key}: ${value};`;
-        }).join('');
-    };
+    // 带缓存的处理函数
+    const cachedFullParse = withCache(
+        (args: string[]) => parseStylesInternal(args, currentTheme),
+        cacheSystem.fullParseCache
+    );
 
-    // 处理主题样式（带单个类缓存）
-    const handleThemeStyle = (style: string): string => {
-        const trimmedStyle = style.trim();
-        if (!trimmedStyle) return '';
-
-        // 生成单个类的缓存键
-        const singleClassCacheKey = simpleHash(`${theme.value}:${trimmedStyle}`);
-
-        // 检查单个类处理缓存
-        if (cacheSystem.singleClassCache.has(singleClassCacheKey)) {
-            return cacheSystem.singleClassCache.get(singleClassCacheKey)!;
-        }
-
-        let result = '';
-
-        // 获取样式前缀
-        const getStylePrefix = (style: string): string => {
-            return style.split('-').slice(0, -1).join('-') + '-';
-        };
-
-        // 特殊处理背景和文字颜色
-        const handleColorStyle = (style: string, prefix: string, property: string): string => {
-            const colorName = style.replace(prefix, '');
-            if (currentTheme[style]) {
-                return `${property}: ${currentTheme[style]};`;
-            }
-            if (currentTheme[colorName] && typeof currentTheme[colorName] === 'string') {
-                return `${property}: ${currentTheme[colorName]};`;
-            }
-            // 如果不是主题颜色，使用原始处理函数
-            if (typeof currentTheme[prefix] === 'function') {
-                return currentTheme[prefix](style);
-            }
-            return '';
-        };
-
-        // 处理背景颜色
-        if (trimmedStyle.startsWith('bg-') && !trimmedStyle.includes('filter') && !trimmedStyle.includes('repeat') && !trimmedStyle.includes('size') && !trimmedStyle.includes('position')) {
-            result = handleColorStyle(trimmedStyle, 'bg-', 'background');
-        }
-        // 处理文字颜色
-        else if (trimmedStyle.startsWith('text-') && !trimmedStyle.includes('align') && !trimmedStyle.includes('decoration') && !['text-xs', 'text-sm', 'text-md', 'text-lg', 'text-xl', 'text-xxl', 'text-2xl'].includes(trimmedStyle)) {
-            result = handleColorStyle(trimmedStyle, 'text-', 'color');
-        }
-        // 如果是主题中定义的直接样式
-        else if (currentTheme[trimmedStyle] && typeof currentTheme[trimmedStyle] === 'string') {
-            if (currentTheme[trimmedStyle].includes(';')) {
-                result = currentTheme[trimmedStyle];
-            } else {
-                const prefix = getStylePrefix(trimmedStyle);
-                if (typeof currentTheme[prefix] === 'function') {
-                    result = currentTheme[prefix](`${prefix}${currentTheme[trimmedStyle]}`);
-                }
-            }
-        } else { // 如果是需要通过函数处理的样式
-            const prefix = getStylePrefix(trimmedStyle);
-            if (typeof currentTheme[prefix] === 'function') {
-                result = currentTheme[prefix](trimmedStyle);
-            }
-        }
-
-        if (!result) {
-            console.warn(`样式 "${trimmedStyle}" 无法解析`);
-        }
-
-        // 缓存单个类处理结果
-        cacheSystem.singleClassCache.set(singleClassCacheKey, result);
-        return result;
-    };
-
-    // 处理所有输入样式
-    const finalResult = args.map(input => {
-        if (input.includes(':')) {
-            return handleDirectCSS(input);
-        }
-
-        // 生成类CSS字符串的缓存键
-        const classStringCacheKey = simpleHash(`${theme.value}:${input}`);
-
-        // 检查类CSS处理缓存
-        if (cacheSystem.classStringCache.has(classStringCacheKey)) {
-            return cacheSystem.classStringCache.get(classStringCacheKey)!;
-        }
-
-        // 处理类CSS字符串
-        const classResult = input.split(' ').map(style => handleThemeStyle(style)).filter(Boolean).join('');
-
-        // 缓存类CSS处理结果
-        cacheSystem.classStringCache.set(classStringCacheKey, classResult);
-        return classResult;
-    }).join('');
-
-    // 缓存整体CSS解析结果
-    cacheSystem.fullParseCache.set(fullCacheKey, finalResult);
-
-    return finalResult;
+    const fullCacheKey = simpleHash(`${theme.value}:${args.join('|')}`);
+    return cachedFullParse(fullCacheKey, args);
 };
+
+/**
+ * 内部样式解析函数
+ * @param args 样式参数数组
+ * @param currentTheme 当前主题对象
+ * @returns 解析后的CSS字符串
+ */
+function parseStylesInternal(args: string[], currentTheme: themeObj): string {
+    const cachedClassParse = withCache((input: string) => parseClassString(input, currentTheme), cacheSystem.classStringCache);
+
+    return args.map(input => {
+        if (input.includes(':')) {
+            return parseDirectCSS(input);
+        }
+
+        const classStringCacheKey = simpleHash(`${theme.value}:${input}`);
+        return cachedClassParse(classStringCacheKey, input);
+    }).join('');
+}
+
+/**
+ * 解析类字符串
+ * @param input 输入的类字符串
+ * @param currentTheme 当前主题对象
+ * @returns 解析后的CSS字符串
+ */
+function parseClassString(input: string, currentTheme: themeObj): string {
+    const cachedSingleParse = withCache((style: string) => processSingleStyle(style, currentTheme), cacheSystem.singleClassCache);
+
+    return input.split(' ').map(style => {
+        const singleClassCacheKey = simpleHash(`${theme.value}:${style}`);
+        return cachedSingleParse(singleClassCacheKey, style);
+    }).filter(Boolean).join('');
+}
 
 // 导出主题注册器、解析器和缓存系统
 export {
