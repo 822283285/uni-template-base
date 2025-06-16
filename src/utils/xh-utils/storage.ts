@@ -41,6 +41,17 @@ const clear = (): void => {
     uni.clearStorageSync();
 }
 
+
+/**
+ * 本地存储工具模块
+ * @module storage
+ * @description 提供本地存储的基本操作，包括获取、设置、删除和清空功能
+ * @exports {Object} storage - 存储操作对象
+ * @property {Function} get - 获取存储数据
+ * @property {Function} set - 设置存储数据
+ * @property {Function} remove - 删除指定存储数据
+ * @property {Function} clear - 清空所有存储数据
+ */
 export default {
     get,
     set,
