@@ -8,9 +8,13 @@
 }
 </route>
 <template>
-  <view :style="$c(`vflex bg-base h-${screenHeight}`)">
+  <view :style="$c(`bg-base h-${screenHeight - tabHeight}`)">
+    <!-- 顶部占位栏 -->
+    <view :style="$c(`h-${statusBarHeight} w-750 bg-card`)">
+
+    </view>
     <!-- 顶部导航栏 -->
-    <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-120 px-30 bg-card`)">
+    <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-100 px-30 bg-card border-b-dark`)">
       <view :style="$c(`w-120 h-80`)">
         <!-- 返回按钮位置 -->
       </view>
@@ -20,29 +24,21 @@
       </view>
       <view :style="$c(`w-120 hflex hflex-hright hflex-vcenter h-80`)">
         <!-- 主题切换按钮 -->
-        <view 
-          :style="$c(`px-20 py-10 rounded-md`)"
-          @click="toggleTheme"
-        >
+        <view :style="$c(`px-20 py-10 rounded-md`)" @click="toggleTheme">
           <text :style="$c(`text-2xl text-inverse`)">{{ currentTheme === 'light' ? '🌙' : '☀️' }}</text>
         </view>
       </view>
     </view>
 
     <!-- 滚动内容区域 -->
-    <scroll-view 
-      scroll-y 
-      :style="$c(`flex-1 px-30 h-${screenHeight-80} scrollbar-hidden py-20`)"
-    >
+    <scroll-view scroll-y
+      :style="$c(`flex-1 px-30 h-${screenHeight - statusBarHeight - tabHeight - 100} scrollbar-hidden py-20`)">
       <!-- 主题色彩展示 -->
       <view :style="$c(`mb-40`)">
         <text :style="$c(`text-md text-base font-bold mb-20 block`)">主题色彩</text>
         <view :style="$c(`hflex flex-wrap gap-20`)">
-          <view 
-            v-for="color in themeColors" 
-            :key="color.name"
-            :style="$c(`vflex vflex-hvcenter w-140 h-120 rounded-md`, `bg-${color.value}`)"
-          >
+          <view v-for="color in themeColors" :key="color.name"
+            :style="$c(`vflex vflex-hvcenter w-140 h-120 rounded-md`, `bg-${color.value}`)">
             <text :style="$c(`text-xs text-inverse text-center`)">{{ color.name }}</text>
             <text :style="$c(`text-xs text-inverse text-center opacity-80`)">{{ color.value }}</text>
           </view>
@@ -53,11 +49,8 @@
       <view :style="$c(`mb-40`)">
         <text :style="$c(`text-md text-base font-bold mb-20 block`)">文字大小</text>
         <view :style="$c(`vflex gap-15`)">
-          <view 
-            v-for="textSize in textSizes"
-            :key="textSize.name"
-            :style="$c(`hflex hflex-hbetween hflex-vcenter py-15 px-20 bg-card rounded-sm border-dark`)"
-          >
+          <view v-for="textSize in textSizes" :key="textSize.name"
+            :style="$c(`hflex hflex-hbetween hflex-vcenter py-15 px-20 bg-card rounded-sm border-dark`)">
             <text :style="$c(`text-sm text-secondary`)">{{ textSize.name }}</text>
             <text :style="$c(`text-secondary`, textSize.class)">示例文字</text>
           </view>
@@ -67,7 +60,7 @@
       <!-- 布局示例 -->
       <view :style="$c(`mb-40`)">
         <text :style="$c(`text-md text-base font-bold mb-20 block`)">布局示例</text>
-        
+
         <!-- 水平布局 -->
         <view :style="$c(`mb-20`)">
           <text :style="$c(`text-sm text-secondary mb-10 block`)">水平布局 (hflex)</text>
@@ -101,11 +94,8 @@
       <view :style="$c(`mb-40`)">
         <text :style="$c(`text-md text-base font-bold mb-20 block`)">圆角示例</text>
         <view :style="$c(`hflex flex-wrap gap-20`)">
-          <view 
-            v-for="radius in borderRadius"
-            :key="radius.name"
-            :style="$c(`vflex vflex-hvcenter w-120 h-80 bg-primary`, radius.class)"
-          >
+          <view v-for="radius in borderRadius" :key="radius.name"
+            :style="$c(`vflex vflex-hvcenter w-120 h-80 bg-primary`, radius.class)">
             <text :style="$c(`text-xs text-inverse text-center`)">{{ radius.name }}</text>
           </view>
         </view>
@@ -115,11 +105,8 @@
       <view :style="$c(`mb-40`)">
         <text :style="$c(`text-md text-base font-bold mb-20 block`)">阴影示例</text>
         <view :style="$c(`hflex flex-wrap gap-30`)">
-          <view 
-            v-for="shadow in shadows"
-            :key="shadow.name"
-            :style="$c(`vflex vflex-hvcenter w-140 h-100 bg-card rounded-md`, shadow.class)"
-          >
+          <view v-for="shadow in shadows" :key="shadow.name"
+            :style="$c(`vflex vflex-hvcenter w-140 h-100 bg-card rounded-md`, shadow.class)">
             <text :style="$c(`text-xs text-base text-center`)">{{ shadow.name }}</text>
           </view>
         </view>
@@ -154,14 +141,23 @@
           <text :style="$c(`text-sm text-base block`)">4. 所有样式都支持响应式主题切换</text>
         </view>
       </view>
+      <view :style="$c(`mb-40`)">
+        <text :style="$c(`text-md text-base font-bold mb-20 block`)">测试样式工具</text>
+        <view :style="$c(`p-20 bg-card rounded-sm border-dark`)">
+          <text :style="$c(`text-sm text-base block mb-10`)">1. 获取text-base颜色：{{ $c.getColor('text-base') }}</text>
+          <text :style="$c(`text-sm text-base block mb-10`)">2. 获取text-sm大小：{{ $c.getSize('text-sm') }}</text>
+        </view>
+      </view>
     </scroll-view>
   </view>
 </template>
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { $c, themeRegistry } from '@utils/xh-utils'
-let {screenHeight,screenWidth} = uni.getWindowInfo()
-screenHeight = (screenHeight/screenWidth)*750
+let { screenHeight, screenWidth, statusBarHeight } = uni.getWindowInfo()
+screenHeight = (screenHeight / screenWidth) * 750
+statusBarHeight = (statusBarHeight / screenWidth) * 750
+const tabHeight = (50 / screenWidth) * 750
 const title = ref('主题示例页面')
 const subTitle = ref('欢迎使用主题工具')
 
