@@ -2,7 +2,7 @@ interface constantObj {
     [key: string]: any
 }
 const time_constant: constantObj = {
-    SECOND: 1000,
+    "SECOND": 1000,
     "SECOND_1": 1000,
     "SECOND_5": 5000,
     "SECOND_10": 10000,

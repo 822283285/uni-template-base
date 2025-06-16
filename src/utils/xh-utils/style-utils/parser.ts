@@ -5,7 +5,7 @@ import visual from './theme/visual';
 import { lightTheme, darkTheme, type themeObj } from './theme/theme-base'
 import { ref, type Ref } from 'vue';
 import store from '../storage'
-import { deepMerge } from '../data';
+import $data from '../data';
 import constant from '../constant';
 
 // 定义主题类型 - 支持动态扩展
@@ -58,8 +58,10 @@ const allTheme: ThemeMap = {
 };
 // 合并完整主题对象
 function mergeTheme(sourceTheme: themeObj) {
-    return deepMerge<object>(layout, boxModel, typography, visual, sourceTheme) as themeObj;
+    return $data.deepMerge<object>(layout, boxModel, typography, visual, sourceTheme) as themeObj;
 }
+
+// 简单哈希函数
 function simpleHash(str: string): string {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -82,7 +84,7 @@ const themeRegistry: ThemeRegistry = {
         if (!themeConfig || typeof themeConfig !== 'object') {
             throw new Error('主题配置必须是有效的对象');
         }
-        allTheme[name] = mergeTheme(deepMerge(this.getCurrentThemeObj(), themeConfig));
+        allTheme[name] = mergeTheme($data.deepMerge(this.getCurrentThemeObj(), themeConfig));
         console.log(`主题 "${name}" 注册成功`);
     },
 
