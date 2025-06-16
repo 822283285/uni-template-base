@@ -39,7 +39,7 @@ const lightTheme: themeObj = {
     "rounded-circle": "9999rpx", // 圆形
 
     // 边框
-    "border": "2rpx solid #EEEEEE", // 边框
+    "border-dark": "2rpx solid #EEEEEE", // 边框
     "border-light": "2rpx solid #F5F5F5", // 浅边框
 
     // 投影

@@ -77,8 +77,6 @@ const boxModel: boxModel = {
     "mx-": createDualPropertyHandler("margin-left", "margin-right", "mx"),
     "my-": createDualPropertyHandler("margin-top", "margin-bottom", "my"),
     /** 边框 */
-    // 整体
-    "border-": createPropertyHandler("border", "border"),
     // 单方向
     "border-t-": createPropertyHandler("border-top", "border-t"),
     "border-b-": createPropertyHandler("border-bottom", "border-b"),
@@ -87,9 +85,9 @@ const boxModel: boxModel = {
     // 纵横方向
     "border-x-": createDualPropertyHandler("border-left", "border-right", "border-x"),
     "border-y-": createDualPropertyHandler("border-top", "border-bottom", "border-y"),
-    /** 圆角 */
     // 整体
-    "rounded-": createPropertyHandler("border-radius", "rounded"),
+    "border-": createPropertyHandler("border", "border"),
+    /** 圆角 */
     // 单方向
     "rounded-t-": createDualPropertyHandler("border-top-left-radius", "border-top-right-radius", "rounded-t"),
     "rounded-b-": createDualPropertyHandler("border-bottom-left-radius", "border-bottom-right-radius", "rounded-b"),
@@ -100,6 +98,8 @@ const boxModel: boxModel = {
     "rounded-tr-": createPropertyHandler("border-top-right-radius", "rounded-tr"),
     "rounded-bl-": createPropertyHandler("border-bottom-left-radius", "rounded-bl"),
     "rounded-br-": createPropertyHandler("border-bottom-right-radius", "rounded-br"),
+    // 整体
+    "rounded-": createPropertyHandler("border-radius", "rounded"),
     /** 常用尺寸 */
     // 全屏高度
     "min-h-100vh": "min-height: 100vh;",
