@@ -11,7 +11,7 @@ import { lightTheme, darkTheme } from './theme/theme-base';
 import { parser, themeRegistry, theme } from './parser';
 
 // 导入样式工具
-import { getColor } from './utils'
+import { getColor, getSize, getThemeStr } from './utils'
 
 // 导入类型定义
 import type { layout as LayoutType } from './theme/layout';
@@ -20,6 +20,20 @@ import type { typography as TypographyType } from './theme/typography';
 import type { visual as VisualType } from './theme/visual';
 import type { themeObj as ThemeObjType } from './theme/theme-base';
 import type { ThemeType, ThemeMap, ThemeRegistry } from './parser';
+
+
+const $c = (...args: string[]) => parser(...args)
+$c.themeRegistry = themeRegistry;
+$c.getAllThemes = themeRegistry.getAllThemes;
+$c.getCurrentTheme = themeRegistry.getCurrentTheme;
+$c.getCurrentThemeObj = themeRegistry.getCurrentThemeObj;
+$c.getTheme = themeRegistry.getTheme;
+$c.registerTheme = themeRegistry.registerTheme;
+$c.setCurrentTheme = themeRegistry.setCurrentTheme;
+$c.unregisterTheme = themeRegistry.unregisterTheme;
+$c.getColor = getColor;
+$c.getSize = getSize;
+$c.getThemeStr = getThemeStr;
 
 // 导出所有主题模块
 export {
@@ -38,6 +52,8 @@ export {
 
   // 样式工具
   getColor,
+  getSize,
+  getThemeStr
 };
 
 // 导出所有类型
@@ -52,5 +68,5 @@ export type {
   ThemeRegistry
 };
 
-// 默认导出解析器
-export default parser;
+// 默认导出解析器工具集
+export default $c;
