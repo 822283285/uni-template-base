@@ -35,4 +35,38 @@ function deepMerge<T extends object>(...objects: Partial<T>[]): T {
 
     return result as T;
 }
-export { deepMerge };
+
+/**
+ * 深拷贝对象
+ * @param obj 待拷贝对象
+ * @returns 拷贝后的对象
+ */
+function deepClone<T>(obj: T): T {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+
+    const temp: any = Array.isArray(obj) ? [] : {};
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            temp[key] = deepClone(obj[key]);
+        }
+    }
+
+    return temp as T;
+}
+
+/**
+ * 获取uuid
+ * @returns uuid
+ */
+function getUUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+
+export default { deepMerge, deepClone, getUUID };
