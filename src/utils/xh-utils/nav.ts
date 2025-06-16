@@ -2,6 +2,11 @@
  * 导航工具集
  */
 
+import * as pagesConfig from '@/pages.json'
+const { pages, subPackages, tabBar = { list: [] } } = { ...pagesConfig }
+console.log({ pages, subPackages, tabBar });
+
+
 interface ParamMap {
     [key: string]: any;
 }
@@ -107,7 +112,10 @@ const getUniPageParam = <T>(option: PageOption, varName: string, defaultValue: T
         return defaultValue;
     }
 };
-
+/**
+ * 重定向到指定页面
+ * @param {string} url - 要重定向的页面路径
+ */
 const redirectTo = (url: string): void => {
     uni.redirectTo({
         url: url,
@@ -119,22 +127,74 @@ const redirectTo = (url: string): void => {
     })
 }
 
+/**
+ * 回退至上一个页面
+ */
 const back = (): void => {
     uni.navigateBack()
 }
-const $nav = {
-    gotoPage,
-    getUniPageParam,
-    redirectTo,
-    back
+
+/**
+ * 获取上一个页面实例
+ * @returns {UniApp.PageInstance | null} 上一个页面实例，如果不存在则返回 null
+ */
+const getPrePage = () => {
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+        return pages[pages.length - 2];
+    }
+    return null;
 }
+
+/**
+ * 获取当前页面实例
+ * @returns {UniApp.PageInstance | null} 当前页面实例，如果不存在则返回 null
+ */
+const getCurrentPage = () => {
+    const pages = getCurrentPages();
+    if (pages.length > 0) {
+        return pages[pages.length - 1];
+    }
+    return null;
+}
+
+/**
+ * 获取页面是否为tabbar页面
+ * @param {string} url - 页面路径(不传默认为当前页)
+ * @returns {boolean} 是否在tabbar中
+ */
+const getIsTabbar = (url?: string) => {
+    if (!url) {
+        url = getCurrentPage()?.route;
+    }
+    if (!url) {
+        return false;
+    }
+    if (url.startsWith('/')) {
+        url = url.substring(1)
+    }
+    const { list } = tabBar;
+    const isTabbar = list.some(item => item.pagePath === url);
+    return isTabbar;
+}
+
 /**
  * 导航工具类
  * @namespace navUtils
- * @property {Function} insertParamsToUrl - 向URL中插入参数
  * @property {Function} gotoPage - 页面导航函数
  * @property {Function} getUniPageParam - 获取页面参数
+ * @property {Function} redirectTo - 重定向函数
+ * @property {Function} back - 回退函数
+ * @property {Function} getPrePage - 获取上一个页面实例
+ * @property {Function} getCurrentPage - 获取当前页面实例
+ * @property {Function} getIsTabbar - 获取页面是否为tabbar页面
  */
-export {
-    $nav
-};
+export default {
+    gotoPage,
+    getUniPageParam,
+    redirectTo,
+    back,
+    getPrePage,
+    getCurrentPage,
+    getIsTabbar
+}
