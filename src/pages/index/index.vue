@@ -40,7 +40,7 @@ const title = ref('首页')
 // 当前主题
 const currentTheme = computed(() => $c.getCurrentTheme())
 const toggleTheme = () => {
-  const newTHeme = currentTheme.value == 'light' ? 'dark' : 'light'
+  const newTHeme = $c.getCurrentTheme() == 'light' ? 'dark' : 'light'
   $c.setCurrentTheme(newTHeme)
   uni.setTabBarStyle({
     backgroundColor: $c.getColor('bg-base'),

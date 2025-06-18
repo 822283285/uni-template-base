@@ -149,7 +149,7 @@ const currentTheme = computed(() => $c.getCurrentTheme())
 
 // 主题切换函数
 const toggleTheme = () => {
-  const newTheme = currentTheme.value === 'light' ? 'dark' : 'light'
+  const newTheme = $c.getCurrentTheme() === 'light' ? 'dark' : 'light'
   $c.setCurrentTheme(newTheme)
   uni.setTabBarStyle({
     backgroundColor: $c.getColor('bg-base'),

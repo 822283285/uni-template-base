@@ -1,5 +1,4 @@
 import { themeRegistry } from "./parser";
-import { reactive } from 'vue'
 import { theme } from './parser'
 /** 
  * 获取主题颜色
