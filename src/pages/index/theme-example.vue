@@ -8,7 +8,7 @@
 }
 </route>
 <template>
-  <view :style="$c(`bg-base h-${$c.sxh - $c.tabh}`)">
+  <view :style="$c(`vflex vflex-hcenter bg-base h-${$c.fullh - $c.tabh}`)">
     <!-- 顶部导航栏 -->
     <xh-navbar :title="title" :is-show-back="false">
       <template #right>

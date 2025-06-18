@@ -9,7 +9,7 @@
 }
 </route>
 <template>
-  <view :style="$c(`vflex vflex-hcenter bg-base  h-${$c.sxh - $c.tabh}`)">
+  <view :style="$c(`vflex vflex-hcenter bg-base  h-${$c.fullh - $c.tabh}`)">
     <xh-navbar :title="title" :is-show-back="false">
       <template #right>
         <text :style="$c(`text-xl hflex hflex-hright wp-100`)" @click="toggleTheme">
@@ -17,13 +17,13 @@
         </text>
       </template>
     </xh-navbar>
-    <scroll-view scroll-y :style="$c(`flex-1 px-30 h-${$c.sxh - $c.tabh - 100} scrollbar-hidden py-20`)">
-      <view>
-        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)"
+    <scroll-view scroll-y :style="$c(`flex-1 px-30 h-${$c.fullh - $c.tabh - 100} scrollbar-hidden py-20`)">
+      <view :style="$c(`overflow-hidden`)">
+        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
           @click="gotoPage('/pages/index/theme-example')">主题示例页</button>
-        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)" @click="testRequest">测试请求</button>
-        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)" @click="getCurrentPage">获取当前页面实例</button>
-        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)"
+        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)" @click="testRequest">测试请求</button>
+        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)" @click="getCurrentPage">获取当前页面实例</button>
+        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
           @click="getCurrentPageInfo">获取当前页面信息</button>
       </view>
     </scroll-view>
