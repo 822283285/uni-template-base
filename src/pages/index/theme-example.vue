@@ -151,15 +151,6 @@ const currentTheme = computed(() => $c.getCurrentTheme())
 const toggleTheme = () => {
   const newTheme = $c.getCurrentTheme() === 'light' ? 'dark' : 'light'
   $c.setCurrentTheme(newTheme)
-  uni.setTabBarStyle({
-    backgroundColor: $c.getColor('bg-base'),
-    color: $c.getColor('text-secondary'),
-    selectedColor: $c.getColor('text-base'),
-    borderStyle: $c.getCurrentTheme() == 'dark' ? 'white' : 'black',
-  })
-  uni.setNavigationBarColor({
-    frontColor: $c.getColor('status-light'),
-  })
 }
 
 // 主题色彩数据

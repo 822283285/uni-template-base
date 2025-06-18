@@ -5,18 +5,29 @@ import { $c } from "./utils/xh-utils";
 onLaunch(() => {
   console.log("App Launch");
   console.log($c.getCurrentTheme())
-  setTimeout(()=>{
-	  uni.setTabBarStyle({
-	    backgroundColor: $c.getColor('bg-base'),
-	    color: $c.getColor('text-secondary'),
-	    selectedColor: $c.getColor('text-base'),
+  uni.$on('theme-change', (themeName) => {
+    uni.setTabBarStyle({
+      backgroundColor: $c.getColor('bg-base'),
+      color: $c.getColor('text-secondary'),
+      selectedColor: $c.getColor('text-base'),
       borderStyle: $c.getCurrentTheme() == 'dark' ? 'white' : 'black',
-	  })
-	  uni.setNavigationBarColor({
-	    frontColor: $c.getColor('status-light'),
-	  })
-  },0)
-  
+    })
+    uni.setNavigationBarColor({
+      frontColor: $c.getColor('status-light'),
+    })
+  })
+  setTimeout(() => {
+    uni.setTabBarStyle({
+      backgroundColor: $c.getColor('bg-base'),
+      color: $c.getColor('text-secondary'),
+      selectedColor: $c.getColor('text-base'),
+      borderStyle: $c.getCurrentTheme() == 'dark' ? 'white' : 'black',
+    })
+    uni.setNavigationBarColor({
+      frontColor: $c.getColor('status-light'),
+    })
+  }, 0)
+
 });
 onShow(() => {
   console.log("App Show");
