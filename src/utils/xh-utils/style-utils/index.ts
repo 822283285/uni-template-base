@@ -22,14 +22,21 @@ import type { themeObj as ThemeObjType } from './theme/theme-base';
 import type { ThemeType, ThemeMap, ThemeRegistry } from './parser';
 
 const { screenHeight, screenWidth, statusBarHeight } = uni.getWindowInfo()
-const px2rpx = (px: number) => px * 750 / screenWidth
-const rpx2px = (rpx: number) => rpx * screenWidth / 750
+function px2rpx(px: number) {
+  return px * 750 / screenWidth
+}
+function rpx2px(rpx: number) {
+  return rpx * screenWidth / 750
+}
 const tabh = px2rpx(50)
 const sbh = px2rpx(statusBarHeight)
 const fullh = px2rpx(screenHeight)
 const sxh = fullh - sbh
 
-const $c = (...args: string[]) => parser(...args)
+// const $c = (...args: string[]) => parser(...args)
+function $c(...args: string[]) {
+  return parser(...args)
+}
 $c.themeRegistry = themeRegistry;
 $c.getAllThemes = themeRegistry.getAllThemes;
 $c.getCurrentTheme = themeRegistry.getCurrentTheme;
@@ -47,6 +54,7 @@ $c.tabh = tabh;
 $c.sbh = sbh;
 $c.fullh = fullh;
 $c.sxh = sxh;
+
 
 // 导出所有主题模块
 export {
