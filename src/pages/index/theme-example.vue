@@ -140,7 +140,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { $c, themeRegistry } from '@utils/xh-utils'
+import { $c } from '@utils/xh-utils'
 
 const title = ref('主题示例页面')
 
