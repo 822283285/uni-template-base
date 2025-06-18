@@ -9,6 +9,7 @@ export default defineUniPages({
     easycom: {
         custom: {
             '^xh-(.*)': '@/components/xh-$1/xh-$1.vue',
+            "^sar-(.*)": "sard-uniapp/components/$1/$1.vue"
         },
     },
     tabBar: {

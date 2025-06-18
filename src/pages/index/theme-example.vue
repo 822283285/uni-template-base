@@ -10,25 +10,15 @@
 <template>
   <view :style="$c(`bg-base h-${screenHeight - tabHeight}`)">
     <!-- 顶部占位栏 -->
-    <view :style="$c(`h-${statusBarHeight} w-750 bg-card`)">
-
-    </view>
+    <view :style="$c(`h-${statusBarHeight} w-750 bg-card`)" />
     <!-- 顶部导航栏 -->
-    <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-100 px-30 bg-card border-b-dark`)">
-      <view :style="$c(`w-120 h-80`)">
-        <!-- 返回按钮位置 -->
-      </view>
-      <view :style="$c(`vflex vflex-hvcenter`)">
-        <text :style="$c(`text-lg text-base font-bold`)">{{ title }}</text>
-        <text :style="$c(`text-xs text-secondary`)">{{ subTitle }}</text>
-      </view>
-      <view :style="$c(`w-120 hflex hflex-hright hflex-vcenter h-80`)">
-        <!-- 主题切换按钮 -->
-        <view :style="$c(`px-20 py-10 rounded-md`)" @click="toggleTheme">
-          <text :style="$c(`text-2xl text-inverse`)">{{ currentTheme === 'light' ? '🌙' : '☀️' }}</text>
-        </view>
-      </view>
-    </view>
+    <xh-navbar :title="title" :is-show-back="false">
+      <template #right>
+        <text :style="$c(`text-xl hflex hflex-hright wp-100`)" @click="toggleTheme">
+          {{ currentTheme == 'light' ? '☀️' : '🌙' }}
+        </text>
+      </template>
+    </xh-navbar>
 
     <!-- 滚动内容区域 -->
     <scroll-view scroll-y
@@ -159,7 +149,6 @@ screenHeight = (screenHeight / screenWidth) * 750
 statusBarHeight = (statusBarHeight / screenWidth) * 750
 const tabHeight = (50 / screenWidth) * 750
 const title = ref('主题示例页面')
-const subTitle = ref('欢迎使用主题工具')
 
 // 当前主题
 const currentTheme = computed(() => themeRegistry.getCurrentTheme())
