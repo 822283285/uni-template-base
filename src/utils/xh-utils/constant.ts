@@ -1,3 +1,4 @@
+import p_constant from '@/project/constant'
 interface constantObj {
     [key: string]: any
 }
@@ -36,7 +37,8 @@ const time_constant: constantObj = {
 }
 const constant: constantObj = {
     "NOW_THEME": "__now_theme__",
-    ...time_constant
+    ...time_constant,
+    ...p_constant
 } as const;
 
 export default constant;
