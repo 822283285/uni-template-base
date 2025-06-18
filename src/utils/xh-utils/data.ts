@@ -67,6 +67,21 @@ function getUUID(): string {
         return v.toString(16);
     });
 }
-
-
-export default { deepMerge, deepClone, getUUID };
+/**
+ * 简单哈希函数
+ * @param str 待哈希字符串
+ * @returns 哈希值
+ */
+function getSimpleHash(str: string) {
+    let hash = 0;
+    if (str.length === 0) return hash;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+export { deepMerge, deepClone, getUUID, getSimpleHash };
+export default { deepMerge, deepClone, getUUID, getSimpleHash };
+    
