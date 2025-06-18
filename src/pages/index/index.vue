@@ -48,7 +48,7 @@ const gotoPage = (url: string) => {
   $nav.gotoPage(url)
 }
 const testRequest = () => {
-  $http.getAction({ url: 'https://free.wqwlkj.cn/wqwlapi/gxwm.php' }).then(res => {
+  $http.getAction({ url: 'https://api.pearktrue.cn/api/hitokoto/' }).then(res => {
     console.log(res)
   })
 }
