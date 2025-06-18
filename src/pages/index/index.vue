@@ -21,8 +21,10 @@
       <view :style="$c(`overflow-hidden`)">
         <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
           @click="gotoPage('/pages/index/theme-example')">主题示例页</button>
-        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)" @click="testRequest">测试请求</button>
-        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)" @click="getCurrentPage">获取当前页面实例</button>
+        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
+          @click="testRequest">测试请求</button>
+        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
+          @click="getCurrentPage">获取当前页面实例</button>
         <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
           @click="getCurrentPageInfo">获取当前页面信息</button>
       </view>
@@ -44,6 +46,9 @@ const toggleTheme = () => {
     backgroundColor: $c.getColor('bg-base'),
     color: $c.getColor('text-secondary'),
     selectedColor: $c.getColor('text-base'),
+  })
+  uni.setNavigationBarColor({
+    frontColor: $c.getColor('status-light'),
   })
 }
 

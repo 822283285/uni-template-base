@@ -22,6 +22,10 @@ const lightTheme: themeObj = {
     "bg-card": "#FFFFFF", // 卡片背景
     "bg-mask": "rgba(0,0,0,0.45)", // 遮罩层
 
+    // 状态栏颜色
+    "status-light": "#000000", // 状态栏浅色
+    "status-dark": "#FFFFFF", // 状态栏深色
+
     // 字体尺寸
     "text-xs": "20rpx", // 极小 (20rpx)
     "text-sm": "24rpx", // 小号 (24rpx)
@@ -67,6 +71,10 @@ const darkTheme: themeObj = {
     "bg-light": "#1A1A1A", // 浅背景
     "bg-card": "#1E1E1E", // 卡片背景
     "bg-mask": "rgba(0,0,0,0.65)", // 遮罩层
+
+    // 状态栏颜色
+    "status-light": "#FFFFFF", // 状态栏浅色
+    "status-dark": "#000000", // 状态栏深色
 
     // 字体尺寸
     "text-xs": "20rpx", // 极小 (20rpx)

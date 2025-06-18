@@ -156,6 +156,9 @@ const toggleTheme = () => {
     color: $c.getColor('text-secondary'),
     selectedColor: $c.getColor('text-base'),
   })
+  uni.setNavigationBarColor({
+    frontColor: $c.getColor('status-light'),
+  })
 }
 
 // 主题色彩数据
