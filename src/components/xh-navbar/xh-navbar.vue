@@ -1,5 +1,6 @@
 <template>
-  <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-${height} w-${width} px-20 border-b-light`)">
+  <view v-if="isSafe" :style="$c(`h-${$c.sbh} w-750 bg-base`)" />
+  <view :style="$c(`hflex hflex-hbetween hflex-vcenter h-${height} w-${width} px-20 border-b-light bg-base`)">
     <!-- 左侧区域 -->
     <view :style="$c(`w-160 h-${height} hflex hflex-vcenter`)">
       <slot name="left">
@@ -75,6 +76,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  isSafe: {
+    type: Boolean,
+    default: true
+  }
 })
 
 const emit = defineEmits(['back'])
