@@ -8,9 +8,7 @@
 }
 </route>
 <template>
-  <view :style="$c(`bg-base h-${screenHeight - tabHeight}`)">
-    <!-- 顶部占位栏 -->
-    <view :style="$c(`h-${statusBarHeight} w-750 bg-card`)" />
+  <view :style="$c(`bg-base h-${$c.sxh - $c.tabh}`)">
     <!-- 顶部导航栏 -->
     <xh-navbar :title="title" :is-show-back="false">
       <template #right>
@@ -21,8 +19,7 @@
     </xh-navbar>
 
     <!-- 滚动内容区域 -->
-    <scroll-view scroll-y
-      :style="$c(`flex-1 px-30 h-${screenHeight - statusBarHeight - tabHeight - 100} scrollbar-hidden py-20`)">
+    <scroll-view scroll-y :style="$c(`flex-1 px-30 h-${$c.sxh - $c.tabh - 100} scrollbar-hidden py-20`)">
       <!-- 主题色彩展示 -->
       <view :style="$c(`mb-40`)">
         <text :style="$c(`text-md text-base font-bold mb-20 block`)">主题色彩</text>
@@ -144,19 +141,21 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { $c, themeRegistry } from '@utils/xh-utils'
-let { screenHeight, screenWidth, statusBarHeight } = uni.getWindowInfo()
-screenHeight = (screenHeight / screenWidth) * 750
-statusBarHeight = (statusBarHeight / screenWidth) * 750
-const tabHeight = (50 / screenWidth) * 750
+
 const title = ref('主题示例页面')
 
 // 当前主题
-const currentTheme = computed(() => themeRegistry.getCurrentTheme())
+const currentTheme = computed(() => $c.getCurrentTheme())
 
 // 主题切换函数
 const toggleTheme = () => {
   const newTheme = currentTheme.value === 'light' ? 'dark' : 'light'
-  themeRegistry.setCurrentTheme(newTheme)
+  $c.setCurrentTheme(newTheme)
+  uni.setTabBarStyle({
+    backgroundColor: $c.getColor('bg-base'),
+    color: $c.getColor('text-secondary'),
+    selectedColor: $c.getColor('text-base'),
+  })
 }
 
 // 主题色彩数据

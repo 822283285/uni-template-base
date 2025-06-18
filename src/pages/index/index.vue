@@ -8,29 +8,35 @@
 }
 </route>
 <template>
-  <view :style="$c(`vflex vflex-hcenter hv-100 bg-base w-750`)">
+  <view :style="$c(`vflex vflex-hcenter bg-base  h-${$c.sxh - $c.tabh}`)">
     <xh-navbar :title="title" :is-show-back="false">
       <template #right>
-        <text :style="$c(`text-xl hflex hflex-hright wp-100`)" @click="onThemeToggle">
-          {{ nowTheme == 'light' ? '☀️' : '🌙' }}
+        <text :style="$c(`text-xl hflex hflex-hright wp-100`)" @click="toggleTheme">
+          {{ currentTheme == 'light' ? '☀️' : '🌙' }}
         </text>
       </template>
     </xh-navbar>
-    <view>
+    <scroll-view scroll-y :style="$c(`flex-1 px-30 h-${$c.sxh - $c.tabh - 100} scrollbar-hidden py-20`)">
       <button @click="gotoPage('/pages/index/theme-example')">主题示例页</button>
-    </view>
+    </scroll-view>
   </view>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { $c, $nav } from '@utils/xh-utils'
 
 const title = ref('首页')
-const nowTheme = ref($c.getCurrentTheme())
-const onThemeToggle = () => {
-  nowTheme.value = nowTheme.value == 'light' ? 'dark' : 'light'
-  $c.setCurrentTheme(nowTheme.value)
-  console.log('主题已切换为:', $c.getCurrentTheme())
+
+// 当前主题
+const currentTheme = computed(() => $c.getCurrentTheme())
+const toggleTheme = () => {
+  const newTHeme = currentTheme.value == 'light' ? 'dark' : 'light'
+  $c.setCurrentTheme(newTHeme)
+  uni.setTabBarStyle({
+    backgroundColor: $c.getColor('bg-base'),
+    color: $c.getColor('text-secondary'),
+    selectedColor: $c.getColor('text-base'),
+  })
 }
 
 const gotoPage = (url: string) => {
