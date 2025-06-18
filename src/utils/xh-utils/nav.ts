@@ -4,8 +4,6 @@
 
 import * as pagesConfig from '@/pages.json'
 const { pages, subPackages, tabBar = { list: [] } } = { ...pagesConfig }
-console.log({ pages, subPackages, tabBar });
-
 
 interface ParamMap {
     [key: string]: any;
@@ -139,9 +137,9 @@ const back = (): void => {
  * @returns {UniApp.PageInstance | null} 上一个页面实例，如果不存在则返回 null
  */
 const getPrePage = () => {
-    const pages = getCurrentPages();
-    if (pages.length > 1) {
-        return pages[pages.length - 2];
+    const pageStack = getCurrentPages();
+    if (pageStack.length > 1) {
+        return pageStack[pageStack.length - 2];
     }
     return null;
 }
@@ -151,9 +149,24 @@ const getPrePage = () => {
  * @returns {UniApp.PageInstance | null} 当前页面实例，如果不存在则返回 null
  */
 const getCurrentPage = () => {
-    const pages = getCurrentPages();
+    const pageStack = getCurrentPages();
+    if (pageStack.length > 0) {
+        return pageStack[pageStack.length - 1];
+    }
+    return null;
+}
+
+/**
+ * 获取当前页面配置信息
+ * @returns {Object | null} 当前页面的配置信息，如果不存在则返回 null
+ * @description 从pages.json中获取当前页面的配置信息，包含页面路径、样式等配置
+ */
+const getCurrentPageInfo = () => {
+    const pageStack = getCurrentPages();
     if (pages.length > 0) {
-        return pages[pages.length - 1];
+        const currentRoute = pageStack[pageStack.length - 1]?.route;
+
+        return pages.find(pageConfig => pageConfig.path === currentRoute);
     }
     return null;
 }
@@ -188,6 +201,7 @@ const getIsTabbar = (url?: string) => {
  * @property {Function} back - 回退函数
  * @property {Function} getPrePage - 获取上一个页面实例
  * @property {Function} getCurrentPage - 获取当前页面实例
+ * @property {Function} getCurrentPageInfo - 获取当前页面信息
  * @property {Function} getIsTabbar - 获取页面是否为tabbar页面
  */
 export default {
@@ -197,5 +211,6 @@ export default {
     back,
     getPrePage,
     getCurrentPage,
+    getCurrentPageInfo,
     getIsTabbar
 }
