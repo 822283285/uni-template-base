@@ -5,6 +5,7 @@
     navigationStyle: 'custom',
     navigationBarTitleText: '首页',
   },
+  needLogin: true,
 }
 </route>
 <template>
@@ -17,13 +18,20 @@
       </template>
     </xh-navbar>
     <scroll-view scroll-y :style="$c(`flex-1 px-30 h-${$c.sxh - $c.tabh - 100} scrollbar-hidden py-20`)">
-      <button @click="gotoPage('/pages/index/theme-example')">主题示例页</button>
+      <view>
+        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)"
+          @click="gotoPage('/pages/index/theme-example')">主题示例页</button>
+        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)" @click="testRequest">测试请求</button>
+        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)" @click="getCurrentPage">获取当前页面实例</button>
+        <button :style="$c(`bg-card rounded-md text-base border-light mb-20`)"
+          @click="getCurrentPageInfo">获取当前页面信息</button>
+      </view>
     </scroll-view>
   </view>
 </template>
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { $c, $nav } from '@utils/xh-utils'
+import { $c, $nav, $http } from '@utils/xh-utils'
 
 const title = ref('首页')
 
@@ -42,5 +50,18 @@ const toggleTheme = () => {
 const gotoPage = (url: string) => {
   $nav.gotoPage(url)
 }
+const testRequest = () => {
+  $http.getAction({ url: 'https://free.wqwlkj.cn/wqwlapi/gxwm.php' }).then(res => {
+    console.log(res)
+  })
+}
+const getCurrentPage = () => {
+  const currentPage = $nav.getCurrentPage()
+  console.log('当前页面实例', currentPage);
 
+}
+const getCurrentPageInfo = () => {
+  const currentPageInfo = $nav.getCurrentPageInfo()
+  console.log('当前页面信息', currentPageInfo);
+}
 </script>
