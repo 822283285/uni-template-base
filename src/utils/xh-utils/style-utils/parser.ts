@@ -48,7 +48,7 @@ const cacheSystem: CacheSystem = {
         this.fullParseCache.clear();
         this.classStringCache.clear();
         this.singleClassCache.clear();
-        console.log('样式缓存已清空');
+        
     }
 };
 
@@ -86,7 +86,7 @@ const themeRegistry: ThemeRegistry = {
             throw new Error('主题配置必须是有效的对象');
         }
         allTheme[name] = mergeTheme($data.deepMerge(this.getCurrentThemeObj(), themeConfig));
-        console.log(`主题 "${name}" 注册成功`);
+        
     },
 
     /**
@@ -103,7 +103,7 @@ const themeRegistry: ThemeRegistry = {
             if (theme.value === name) {
                 this.setCurrentTheme('light');
             }
-            console.log(`主题 "${name}" 注销成功`);
+            
         } else {
             console.warn(`主题 "${name}" 不存在`);
         }
@@ -142,7 +142,7 @@ const themeRegistry: ThemeRegistry = {
         store.set(constant.NOW_THEME, name);
         // 切换主题时清空缓存
         cacheSystem.clearAll();
-        console.log(`当前主题已切换为: ${name}`);
+        
     },
 
     /**
