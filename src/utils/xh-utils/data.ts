@@ -82,6 +82,14 @@ function getSimpleHash(str: string) {
     }
     return hash;
 }
-export { deepMerge, deepClone, getUUID, getSimpleHash };
+/**
+ * 数据处理工具模块
+ * @module data
+ * @description 提供数据处理的基本操作，包括深度合并、深度克隆和简单哈希计算等功能
+ * @property {Function} deepMerge - 深度合并对象
+ * @property {Function} deepClone - 深度克隆对象
+ * @property {Function} getUUID - 生成UUID
+ * @property {Function} getSimpleHash - 计算简单哈希值
+ */
 export default { deepMerge, deepClone, getUUID, getSimpleHash };
-    
+export { deepMerge, deepClone, getUUID, getSimpleHash };

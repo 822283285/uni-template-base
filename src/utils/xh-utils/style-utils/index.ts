@@ -39,6 +39,7 @@ function $c(...args: string[]) {
 }
 $c.themeRegistry = themeRegistry;
 $c.getAllThemes = themeRegistry.getAllThemes;
+$c.getAllThemesObj = themeRegistry.getAllThemesObj
 $c.getCurrentTheme = themeRegistry.getCurrentTheme;
 $c.getCurrentThemeObj = themeRegistry.getCurrentThemeObj;
 $c.getTheme = themeRegistry.getTheme;
@@ -89,5 +90,27 @@ export type {
   ThemeRegistry
 };
 
-// 默认导出解析器工具集
+/**
+ * 样式工具集模块
+ * @module $c
+ * @description 提供样式解析和主题管理的工具集，包括主题注册、颜色获取、尺寸转换等功能
+ * @property {Function} themeRegistry - 主题注册器
+ * @property {Function} getAllThemes - 获取所有已注册主题
+ * @property {Function} getAllThemesObj - 获取所有已注册主题对象
+ * @property {Function} getCurrentTheme - 获取当前主题名称
+ * @property {Function} getCurrentThemeObj - 获取当前主题对象
+ * @property {Function} getTheme - 获取指定主题
+ * @property {Function} registerTheme - 注册新主题
+ * @property {Function} setCurrentTheme - 设置当前主题
+ * @property {Function} unregisterTheme - 注销主题
+ * @property {Function} getColor - 获取主题颜色
+ * @property {Function} getSize - 获取主题尺寸
+ * @property {Function} getThemeStr - 获取主题字符串
+ * @property {Function} px2rpx - px转rpx
+ * @property {Function} rpx2px - rpx转px
+ * @property {number} tabh - 底部标签栏高度
+ * @property {number} sbh - 状态栏高度
+ * @property {number} fullh - 屏幕完整高度
+ * @property {number} sxh - 除状态栏外的屏幕高度
+ */
 export default $c;

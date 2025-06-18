@@ -246,7 +246,15 @@ function deleteAction(options: RequestOptions) {
     return baseRequest({ ...options, method: 'DELETE' });
 }
 
-// 导出主要函数
+/**
+ * 请求工具类
+ * @module request
+ * @property {Function} baseRequest - 基础请求函数,支持自定义配置的通用请求方法
+ * @property {Function} getAction - GET请求方法
+ * @property {Function} postAction - POST请求方法
+ * @property {Function} putAction - PUT请求方法
+ * @property {Function} deleteAction - DELETE请求方法
+ */
 export default { baseRequest, getAction, postAction, putAction, deleteAction };
 export {
     type RequestOptions,

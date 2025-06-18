@@ -180,7 +180,8 @@ const getIsTabbar = (url?: string) => {
 
 /**
  * 导航工具类
- * @namespace navUtils
+ * @module nav
+ * @description 提供页面导航、参数获取、重定向等功能
  * @property {Function} gotoPage - 页面导航函数
  * @property {Function} getUniPageParam - 获取页面参数
  * @property {Function} redirectTo - 重定向函数

@@ -41,6 +41,13 @@ const constant: constantObj = {
     ...p_constant
 } as const;
 
+/**
+ * 常量工具模块
+ * @module constant
+ * @description 提供全局常量定义，包括时间常量和项目常量等
+ * @property {Object} time_constant - 时间相关常量，包含秒、分、时、天、月、年等时间单位的毫秒值
+ * @property {Object} p_constant - 项目相关常量
+ */
 export default constant;
 export type {
     constantObj
