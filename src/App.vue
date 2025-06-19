@@ -38,6 +38,7 @@ page {
   padding: 0;
   outline: none;
   border: none;
+  transition: background-color 0.3s color 0.3s;
 }
 
 * {
@@ -46,5 +47,6 @@ page {
   padding: 0;
   outline: none;
   border: none;
+  transition: background-color 0.3s color 0.3s;
 }
 </style>

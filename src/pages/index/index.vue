@@ -28,8 +28,11 @@
           @click="getCurrentPage">获取当前页面实例</button>
         <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
           @click="getCurrentPageInfo">获取当前页面信息</button>
+        <button :style="$c(`bg-card rounded-md text-md text-base border-light mb-20`)"
+          @click="openThemeManager">打开主题选择器</button>
       </view>
     </scroll-view>
+    <xh-theme-manager ref="themeManagerRef" />
   </view>
 </template>
 <script setup lang="ts">
@@ -37,7 +40,7 @@ import { computed, ref, onMounted } from 'vue'
 import { $c, $nav, $http } from '@utils/xh-utils'
 
 const title = ref('首页')
-
+const themeManagerRef = ref(null)
 // 当前主题
 const currentTheme = computed(() => $c.getCurrentTheme())
 const toggleTheme = () => {
@@ -61,6 +64,11 @@ const getCurrentPage = () => {
 const getCurrentPageInfo = () => {
   const currentPageInfo = $nav.getCurrentPageInfo()
   console.log('当前页面信息', currentPageInfo);
+}
+const openThemeManager = () => {
+  if (themeManagerRef.value) {
+    (themeManagerRef.value as { open: () => void }).open()
+  }
 }
 onMounted(() => {
   setTimeout(() => {
