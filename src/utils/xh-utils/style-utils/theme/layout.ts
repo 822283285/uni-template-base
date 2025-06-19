@@ -21,6 +21,11 @@ const layout: layout = {
     "absolute": "position: absolute;",
     "fixed": "position: fixed;",
     "sticky": "position: sticky;",
+    // 层级
+    "z-": (value: string) => {
+        value = value.replace("z-", "")
+        return `z-index: ${value};`
+    },
     // 偏移
     "top-": createPropertyHandler("top", "top"),
     "right-": createPropertyHandler("right", "right"),
@@ -40,7 +45,7 @@ const layout: layout = {
     "hflex-vbottom": "align-items: flex-end;",
     "hflex-vstretch": "align-items: stretch;",
     "hflex-vbaseline": "align-items: baseline;",
-    "hflex-hvcenter":"justify-content: center; align-items: center;",
+    "hflex-hvcenter": "justify-content: center; align-items: center;",
     // 纵向flex布局
     "vflex": "display: flex; flex-direction: column;",
     "vflex-hleft": "align-items: flex-start;",
@@ -54,7 +59,7 @@ const layout: layout = {
     "vflex-vbottom": "justify-content: flex-end;",
     "vflex-vstretch": "justify-content: stretch;",
     "vflex-vbaseline": "justify-content: baseline;",
-    "vflex-hvcenter":"justify-content: center; align-items: center;",
+    "vflex-hvcenter": "justify-content: center; align-items: center;",
     // flex杂项
     "flex-1": "flex: 1;",
     "flex-2": "flex: 2;",
