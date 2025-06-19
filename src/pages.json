@@ -8,7 +8,8 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "首页"
       },
-      "needLogin": true
+      "needLogin": true,
+      "layout": "tabbar"
     },
     {
       "path": "pages/index/theme-example",
@@ -17,7 +18,8 @@
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "主题示例页面"
-      }
+      },
+      "layout": "tabbar"
     }
   ],
   "globalStyle": {

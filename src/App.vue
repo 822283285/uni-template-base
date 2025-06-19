@@ -3,6 +3,21 @@ import { onLaunch, onShow, onHide } from "@dcloudio/uni-app";
 import { $c } from "./utils/xh-utils";
 onLaunch(() => {
   console.log("App Launch");
+  uni.$on('theme-change', (themeName) => {
+    try {
+      uni.setTabBarStyle({
+        backgroundColor: $c.getColor('bg-base'),
+        color: $c.getColor('text-secondary'),
+        selectedColor: $c.getColor('text-base'),
+        borderStyle: $c.getCurrentTheme() == 'dark' ? 'white' : 'black',
+      })
+    } catch {
+
+    }
+    uni.setNavigationBarColor({
+      frontColor: $c.getColor('status-light'),
+    })
+  })
 });
 onShow(() => {
   console.log("App Show");
