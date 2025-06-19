@@ -141,6 +141,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { $c } from '@utils/xh-utils'
+import { onShow } from '@dcloudio/uni-app'
 
 const title = ref('主题示例页面')
 
@@ -188,4 +189,15 @@ const shadows = ref([
   { name: '基础投影', class: 'shadow-md' },
   { name: '大投影', class: 'shadow-lg' }
 ])
+onShow(() => {
+  uni.setTabBarStyle({
+    backgroundColor: $c.getColor('bg-base'),
+    color: $c.getColor('text-secondary'),
+    selectedColor: $c.getColor('text-base'),
+    borderStyle: $c.getCurrentTheme() == 'dark' ? 'white' : 'black',
+  })
+  uni.setNavigationBarColor({
+    frontColor: $c.getColor('status-light'),
+  })
+})
 </script>
