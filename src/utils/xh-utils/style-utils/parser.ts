@@ -16,7 +16,7 @@ type ThemeMap = {
 
 // 主题注册接口
 interface ThemeRegistry {
-    registerTheme(name: string, themeConfig: themeObj): void;
+    registerTheme(name: string, baseTheme: string, themeConfig: themeObj): void;
     unregisterTheme(name: string): void;
     getTheme(name: string): themeObj | undefined;
     getAllThemes(): string[];
@@ -78,15 +78,17 @@ const themeRegistry: ThemeRegistry = {
      * @param name 主题名称
      * @param themeConfig 主题配置对象
      */
-    registerTheme(name: string, themeConfig: themeObj): void {
+    registerTheme(name: string, baseTheme: string = 'light', themeConfig: themeObj): void {
         if (!name || typeof name !== 'string') {
             throw new Error('主题名称必须是非空字符串');
         }
         if (!themeConfig || typeof themeConfig !== 'object') {
             throw new Error('主题配置必须是有效的对象');
         }
-        allTheme[name] = mergeTheme($data.deepMerge(this.getCurrentThemeObj(), themeConfig));
-
+        if (!allTheme[baseTheme]) {
+            throw new Error('基础主题不存在');
+        }
+        allTheme[name] = mergeTheme($data.deepMerge(allTheme[baseTheme], themeConfig));
     },
 
     /**
