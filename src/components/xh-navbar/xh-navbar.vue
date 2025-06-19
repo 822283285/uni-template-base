@@ -68,10 +68,6 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  isShowThemeToggle: {
-    type: Boolean,
-    default: true
-  },
   isHookBack: {
     type: Boolean,
     default: false
