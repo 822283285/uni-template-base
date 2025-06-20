@@ -11,7 +11,7 @@ import { lightTheme, darkTheme } from './theme/theme-base';
 import { parser, themeRegistry, theme } from './parser';
 
 // 导入样式工具
-import { getColor, getSize, getThemeStr } from './utils'
+import { getColor, getSize, getThemeStr, color2rgb, color2rgba } from './utils'
 
 // 导入类型定义
 import type { layout as LayoutType } from './theme/layout';
@@ -49,6 +49,8 @@ $c.unregisterTheme = themeRegistry.unregisterTheme;
 $c.getColor = getColor;
 $c.getSize = getSize;
 $c.getThemeStr = getThemeStr;
+$c.color2rgb = color2rgb;
+$c.color2rgba = color2rgba;
 $c.px2rpx = px2rpx;
 $c.rpx2px = rpx2px;
 $c.tabh = tabh;
